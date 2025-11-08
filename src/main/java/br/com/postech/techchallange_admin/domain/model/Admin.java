@@ -14,6 +14,7 @@ public class Admin {
     private LocalDateTime dataCriacao;
     private List<String> roles; // Manter as roles como strings simples nesta camada
 
+    // Construtores ----------------------------------------------------------------------------------------------------
     public Admin() {}
 
     public Admin(String id, String nome, String email, String senhaHash, Boolean ativo, LocalDateTime dataCriacao, List<String> roles) {
