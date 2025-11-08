@@ -12,6 +12,7 @@ import br.com.postech.techchallange_admin.infrastructure.rest.dto.AdminResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +42,7 @@ public class AdminController {
     }
 
     @PostMapping
-    public ResponseEntity<AdminResponse> criarAdmin(@RequestBody AdminDTO request) {
+    public ResponseEntity<AdminResponse> criarAdmin(@Valid @RequestBody AdminDTO request) {
 
         Admin adminParaCriar = new Admin();
         adminParaCriar.setNome(request.nome());
@@ -73,7 +74,7 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdminResponse> atualizarAdmin(@PathVariable String id, @RequestBody AdminDTO request) {
+    public ResponseEntity<AdminResponse> atualizarAdmin(@Valid @PathVariable String id, @RequestBody AdminDTO request) {
 
         Optional<Admin> adminOptional = buscarAdminUseCase.buscarPorId(id);
 
