@@ -23,3 +23,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+jwt:
+  secret: palmeirasNaoTemMundialVitorNhoqueEMuitoBagreVaiCorinthians2012
+  access-token-expiration: 900000       # 15 minutos
+  refresh-token-expiration: 604800000  # 7 dias
