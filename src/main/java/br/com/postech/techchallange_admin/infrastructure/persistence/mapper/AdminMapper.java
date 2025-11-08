@@ -2,12 +2,14 @@ package br.com.postech.techchallange_admin.infrastructure.persistence.mapper;
 
 import br.com.postech.techchallange_admin.domain.model.Admin;
 import br.com.postech.techchallange_admin.infrastructure.persistence.document.AdminDocument;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Mapper responsavel pela conversão entre Admin (Domain) e AdminDocument (MongoDB)
  */
+@Component
 public class AdminMapper {
 
     public static Admin toDomain(AdminDocument document) {
