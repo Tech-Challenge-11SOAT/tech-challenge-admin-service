@@ -7,6 +7,7 @@ import br.com.postech.techchallange_admin.domain.port.out.AdminRepositoryPort;
 import br.com.postech.techchallange_admin.infrastructure.security.TokenBlacklistService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import br.com.postech.techchallange_admin.domain.exception.BusinessException;
 
 @Service
 public class AutenticacaoService implements AutenticarAdminUseCase, LogoutAdminUseCase {
@@ -27,18 +28,16 @@ public class AutenticacaoService implements AutenticarAdminUseCase, LogoutAdminU
     public Admin autenticar(String email, String senha) {
 
         Admin admin = adminRepositoryPort.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos"));
+                .orElseThrow(() -> new BusinessException("Usuário ou senha inválidos"));
 
         if (!passwordEncoder.matches(senha, admin.getSenhaHash())) {
-            throw new RuntimeException("Usuário ou senha inválidos");
+            throw new BusinessException("Usuário ou senha inválidos");
         }
         return admin;
     }
 
     @Override
     public void logout(String token) {
-        // Adiciona o token na "lista negra"
-        // (adaptado do AdminUserService.java do monolito)
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }

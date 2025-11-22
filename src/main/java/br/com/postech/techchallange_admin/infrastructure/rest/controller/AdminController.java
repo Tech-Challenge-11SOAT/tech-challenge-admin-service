@@ -7,6 +7,7 @@ import br.com.postech.techchallange_admin.domain.port.in.ListarAdminsUseCase;
 import br.com.postech.techchallange_admin.domain.port.in.BuscarAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.in.AtualizarAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.in.DeletarAdminUseCase;
+import br.com.postech.techchallange_admin.domain.port.in.ToggleAdminUseCase;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.AdminDTO;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.AdminResponse;
 import org.springframework.http.HttpStatus;
@@ -28,17 +29,20 @@ public class AdminController {
     private final BuscarAdminUseCase buscarAdminUseCase;
     private final AtualizarAdminUseCase atualizarAdminUseCase;
     private final DeletarAdminUseCase deletarAdminUseCase;
+    private final ToggleAdminUseCase toggleAdminUseCase;
 
     public AdminController(CriarAdminUseCase criarAdminUseCase,
                            ListarAdminsUseCase listarAdminsUseCase,
                            BuscarAdminUseCase buscarAdminUseCase,
                            AtualizarAdminUseCase atualizarAdminUseCase,
-                           DeletarAdminUseCase deletarAdminUseCase) {
+                           DeletarAdminUseCase deletarAdminUseCase,
+                           ToggleAdminUseCase toggleAdminUseCase) {
         this.criarAdminUseCase = criarAdminUseCase;
         this.listarAdminsUseCase = listarAdminsUseCase;
         this.buscarAdminUseCase = buscarAdminUseCase;
         this.atualizarAdminUseCase = atualizarAdminUseCase;
         this.deletarAdminUseCase = deletarAdminUseCase;
+        this.toggleAdminUseCase = toggleAdminUseCase;
     }
 
     @PostMapping
@@ -101,5 +105,17 @@ public class AdminController {
 
         deletarAdminUseCase.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/inactivate")
+    public ResponseEntity<AdminResponse> inativarAdmin(@PathVariable String id) {
+        Admin admin = toggleAdminUseCase.toggle(id, false);
+        return ResponseEntity.ok(AdminResponse.fromDomain(admin));
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<AdminResponse> ativarAdmin(@PathVariable String id) {
+        Admin admin = toggleAdminUseCase.toggle(id, true);
+        return ResponseEntity.ok(AdminResponse.fromDomain(admin));
     }
 }

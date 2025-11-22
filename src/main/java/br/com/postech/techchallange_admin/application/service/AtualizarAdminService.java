@@ -16,8 +16,6 @@ public class AtualizarAdminService implements AtualizarAdminUseCase {
 
     @Override
     public Admin atualizar(Admin admin) {
-        // Aqui estamos usando "update" da porta, que você definiu
-        // no arquivo AdminAdapter
         return adminRepositoryPort.update(admin);
     }
 }
