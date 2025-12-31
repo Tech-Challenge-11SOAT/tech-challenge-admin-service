@@ -10,6 +10,7 @@ import br.com.postech.techchallange_admin.infrastructure.rest.dto.ChangePassword
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.LoginDTO;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.RefreshTokenDTO;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.TokenResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -76,6 +77,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenDTO request) {
         // (Esta lógica está estranha no monolito, mas vamos manter por enquanto)
         // O ideal seria invalidar o Access Token, não o Refresh Token.
@@ -84,6 +86,7 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordDTO request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

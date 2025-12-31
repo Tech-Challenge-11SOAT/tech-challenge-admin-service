@@ -4,8 +4,8 @@ import br.com.postech.techchallange_admin.domain.model.Admin;
 import br.com.postech.techchallange_admin.domain.port.in.AutenticarAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.in.LogoutAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.out.AdminRepositoryPort;
-import br.com.postech.techchallange_admin.infrastructure.security.TokenBlacklistService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import br.com.postech.techchallange_admin.domain.port.out.PasswordEncoderPort;
+import br.com.postech.techchallange_admin.domain.port.out.TokenBlacklistPort;
 import org.springframework.stereotype.Service;
 import br.com.postech.techchallange_admin.domain.exception.BusinessException;
 
@@ -13,15 +13,15 @@ import br.com.postech.techchallange_admin.domain.exception.BusinessException;
 public class AutenticacaoService implements AutenticarAdminUseCase, LogoutAdminUseCase {
 
     private final AdminRepositoryPort adminRepositoryPort;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenBlacklistService tokenBlacklistService;
+    private final PasswordEncoderPort passwordEncoderPort;
+    private final TokenBlacklistPort tokenBlacklistPort;
 
     public AutenticacaoService(AdminRepositoryPort adminRepositoryPort,
-                               PasswordEncoder passwordEncoder,
-                               TokenBlacklistService tokenBlacklistService) {
+                               PasswordEncoderPort passwordEncoderPort,
+                               TokenBlacklistPort tokenBlacklistPort) {
         this.adminRepositoryPort = adminRepositoryPort;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenBlacklistService = tokenBlacklistService;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.tokenBlacklistPort = tokenBlacklistPort;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AutenticacaoService implements AutenticarAdminUseCase, LogoutAdminU
         Admin admin = adminRepositoryPort.findByEmail(email)
                 .orElseThrow(() -> new BusinessException("Usuário ou senha inválidos"));
 
-        if (!passwordEncoder.matches(senha, admin.getSenhaHash())) {
+        if (!passwordEncoderPort.matches(senha, admin.getSenhaHash())) {
             throw new BusinessException("Usuário ou senha inválidos");
         }
         return admin;
@@ -41,6 +41,6 @@ public class AutenticacaoService implements AutenticarAdminUseCase, LogoutAdminU
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        tokenBlacklistService.blacklistToken(token);
+        tokenBlacklistPort.blacklistToken(token);
     }
 }

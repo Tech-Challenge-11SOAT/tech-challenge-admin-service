@@ -10,6 +10,7 @@ import br.com.postech.techchallange_admin.domain.port.in.DeletarAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.in.ToggleAdminUseCase;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.AdminDTO;
 import br.com.postech.techchallange_admin.infrastructure.rest.dto.AdminResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admins")
+@SecurityRequirement(name = "bearerAuth")
 public class AdminController {
 
     private final CriarAdminUseCase criarAdminUseCase;

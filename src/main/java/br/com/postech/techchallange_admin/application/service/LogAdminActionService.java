@@ -6,6 +6,7 @@ import br.com.postech.techchallange_admin.domain.port.out.AdminLogAcaoRepository
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class LogAdminActionService implements LogAdminActionUseCase {
@@ -19,6 +20,7 @@ public class LogAdminActionService implements LogAdminActionUseCase {
     @Override
     public void registrar(String idAdmin, String acao, String recursoAfetado, String idRecursoAfetado) {
         AdminLogAcao log = new AdminLogAcao();
+        log.setId(UUID.randomUUID().toString());
         log.setIdAdmin(idAdmin);
         log.setAcao(acao);
         log.setRecursoAfetado(recursoAfetado);

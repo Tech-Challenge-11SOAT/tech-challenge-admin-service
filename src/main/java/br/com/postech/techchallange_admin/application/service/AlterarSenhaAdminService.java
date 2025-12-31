@@ -4,7 +4,7 @@ import br.com.postech.techchallange_admin.domain.exception.BusinessException;
 import br.com.postech.techchallange_admin.domain.model.Admin;
 import br.com.postech.techchallange_admin.domain.port.in.AlterarSenhaAdminUseCase;
 import br.com.postech.techchallange_admin.domain.port.out.AdminRepositoryPort;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import br.com.postech.techchallange_admin.domain.port.out.PasswordEncoderPort;
 import org.springframework.stereotype.Service;
 import br.com.postech.techchallange_admin.domain.port.in.LogAdminActionUseCase;
 
@@ -12,14 +12,14 @@ import br.com.postech.techchallange_admin.domain.port.in.LogAdminActionUseCase;
 public class AlterarSenhaAdminService implements AlterarSenhaAdminUseCase {
 
     private final AdminRepositoryPort adminRepositoryPort;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderPort passwordEncoderPort;
     private final LogAdminActionUseCase logAdminActionUseCase;
 
     public AlterarSenhaAdminService(AdminRepositoryPort adminRepositoryPort,
-                                    PasswordEncoder passwordEncoder,
+                                    PasswordEncoderPort passwordEncoderPort,
                                     LogAdminActionUseCase logAdminActionUseCase) {
         this.adminRepositoryPort = adminRepositoryPort;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoderPort = passwordEncoderPort;
         this.logAdminActionUseCase = logAdminActionUseCase;
     }
 
@@ -28,13 +28,13 @@ public class AlterarSenhaAdminService implements AlterarSenhaAdminUseCase {
         Admin admin = adminRepositoryPort.findByEmail(email)
                 .orElseThrow(() -> new BusinessException("Administrador não encontrado."));
 
-        if (!passwordEncoder.matches(currentPassword, admin.getSenhaHash())) {
+        if (!passwordEncoderPort.matches(currentPassword, admin.getSenhaHash())) {
             throw new BusinessException("Senha atual incorreta.");
         }
 
         validarNovaSenha(currentPassword, newPassword);
 
-        admin.setSenhaHash(passwordEncoder.encode(newPassword));
+        admin.setSenhaHash(passwordEncoderPort.encode(newPassword));
         adminRepositoryPort.update(admin);
 
         logAdminActionUseCase.registrar(

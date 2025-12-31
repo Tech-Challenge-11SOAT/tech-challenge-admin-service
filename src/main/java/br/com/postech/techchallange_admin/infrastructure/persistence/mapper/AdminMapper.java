@@ -1,56 +1,56 @@
 package br.com.postech.techchallange_admin.infrastructure.persistence.mapper;
 
 import br.com.postech.techchallange_admin.domain.model.Admin;
-import br.com.postech.techchallange_admin.infrastructure.persistence.document.AdminDocument;
+import br.com.postech.techchallange_admin.infrastructure.persistence.entity.AdminEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * Mapper responsavel pela conversão entre Admin (Domain) e AdminDocument (MongoDB)
+ * Mapper responsável pela conversão entre Admin (Domain) e AdminEntity (JPA)
  */
 @Component
 public class AdminMapper {
 
-    public static Admin toDomain(AdminDocument document) {
-        if (document == null) {
+    public static Admin toDomain(AdminEntity entity) {
+        if (entity == null) {
             return null;
         }
 
         return new Admin(
-                document.getId(),
-                document.getNome(),
-                document.getEmail(),
-                document.getSenhaHash(),
-                document.getAtivo(),
-                document.getDataCriacao(),
-                document.getRoles()
+                entity.getId(),
+                entity.getNome(),
+                entity.getEmail(),
+                entity.getSenhaHash(),
+                entity.getAtivo(),
+                entity.getDataCriacao(),
+                entity.getRoles()
         );
     }
 
-    public static AdminDocument toDocument(Admin admin) {
+    public static AdminEntity toEntity(Admin admin) {
         if (admin == null) {
             return null;
         }
 
-        AdminDocument document = new AdminDocument();
-        document.setId(admin.getId());
-        document.setNome(admin.getNome());
-        document.setEmail(admin.getEmail());
-        document.setSenhaHash(admin.getSenhaHash());
-        document.setAtivo(admin.getAtivo());
-        document.setDataCriacao(admin.getDataCriacao());
-        document.setRoles(admin.getRoles());
-        document.setDataUltimaAtualizacao(java.time.LocalDateTime.now());
+        AdminEntity entity = new AdminEntity();
+        entity.setId(admin.getId());
+        entity.setNome(admin.getNome());
+        entity.setEmail(admin.getEmail());
+        entity.setSenhaHash(admin.getSenhaHash());
+        entity.setAtivo(admin.getAtivo());
+        entity.setDataCriacao(admin.getDataCriacao());
+        entity.setRoles(admin.getRoles());
+        entity.setDataUltimaAtualizacao(java.time.LocalDateTime.now());
 
-        return document;
+        return entity;
     }
 
-    public static List<Admin> toDomainList(List<AdminDocument> documents) {
-        return documents == null ? List.of() : documents.stream().map(AdminMapper::toDomain).toList();
+    public static List<Admin> toDomainList(List<AdminEntity> entities) {
+        return entities == null ? List.of() : entities.stream().map(AdminMapper::toDomain).toList();
     }
 
-    public static List<AdminDocument> toDocumentList(List<Admin> admins) {
-        return admins == null ? List.of() : admins.stream().map(AdminMapper::toDocument).toList();
+    public static List<AdminEntity> toEntityList(List<Admin> admins) {
+        return admins == null ? List.of() : admins.stream().map(AdminMapper::toEntity).toList();
     }
 }

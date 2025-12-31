@@ -1,15 +1,15 @@
 package br.com.postech.techchallange_admin.infrastructure.persistence.repository;
 
-import br.com.postech.techchallange_admin.infrastructure.persistence.document.AdminDocument;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import br.com.postech.techchallange_admin.infrastructure.persistence.entity.AdminEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface AdminRepository extends MongoRepository<AdminDocument, String> {
+public interface AdminRepository extends JpaRepository<AdminEntity, String> {
 
-    Optional<AdminDocument> findByEmail(String email);
+    Optional<AdminEntity> findByEmail(String email);
 
     boolean existsByEmail(String email);
 }

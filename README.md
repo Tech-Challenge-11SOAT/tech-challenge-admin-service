@@ -10,11 +10,12 @@ Ele foi desenvolvido utilizando **Java 17**, **Spring Boot 3** e segue os princ�
 
 * **Linguagem:** Java 17
 * **Framework:** Spring Boot 3.5.6
-* **Banco de Dados:** MongoDB (NoSQL)
+* **Banco de Dados:** PostgreSQL
+* **Migrações:** Flyway
 * **Segurança:** Spring Security + JWT (JSON Web Tokens)
 * **Documentação:** Springdoc OpenAPI (Swagger UI)
 * **Build:** Maven
-* **Testes:** JUnit 5 + Mockito
+* **Testes:** JUnit 5 + Mockito + Testcontainers
 
 ---
 
@@ -36,7 +37,7 @@ src/main/java/br/com/postech/techchallange_admin/
 │
 └── infrastructure/       # CAMADA DE INFRAESTRUTURA (O mundo externo)
     ├── config/           # Configurações do Spring (Security, Swagger)
-    ├── persistence/      # Implementação do MongoDB (Adapters, Documents, Repositories)
+    ├── persistence/      # Implementação do PostgreSQL (Adapters, Entities, Repositories)
     ├── rest/             # Controladores REST e DTOs (Request/Response)
     └── security/         # Lógica de Tokens JWT e Filtros 
 ```
@@ -49,20 +50,37 @@ Para rodar este projeto localmente, você precisará de:
 
 1.  **Java 17** instalado.
 2.  **Maven** (ou usar o wrapper `mvnw` incluso no projeto).
-3.  **MongoDB** rodando na porta padrão `27017`.
+3.  **PostgreSQL** rodando na porta padrão `5432`.
 
 ---
 
 ## 🏃‍♂️ Como Rodar
 
-### 1. Subir o Banco de Dados (MongoDB)
+### 🐳 Opção 1: Usando Docker (Recomendado)
+
+**Resumo rápido:**
+```bash
+docker compose up --build
+```
+
+A aplicação estará disponível em:
+- **API:** http://localhost:8080
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+
+### 💻 Opção 2: Execução Local
+
+#### 1. Subir o Banco de Dados (PostgreSQL)
 Se você tiver o Docker instalado, pode subir um banco rapidamente com o comando:
 
 ```bash
-docker run -d -p 27017:27017 --name mongo-admin mongo:latest
+docker run -d -p 5432:5432 \
+  -e POSTGRES_DB=tc-admin \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  --name postgres-admin postgres:16-alpine
 ```
 
-### 2. Executar a Aplicação
+#### 2. Executar a Aplicação
 Na raiz do projeto, execute o comando:
 
 #### Linux/Mac:
@@ -118,7 +136,7 @@ A API é protegida por tokens JWT. O fluxo de uso é:
 * **Logout:** Invalida o token atual (Blacklist).
 
 ### Auditoria (Logs)
-Todas as ações críticas (Cadastro e Alteração de Senha) são registradas automaticamente em uma coleção de `logs` no MongoDB, contendo:
+Todas as ações críticas (Cadastro e Alteração de Senha) são registradas automaticamente na tabela `admin_log_acao` no PostgreSQL, contendo:
 * Quem fez a ação.
 * Qual foi a ação.
 * Quando ocorreu.
