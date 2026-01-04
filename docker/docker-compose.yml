@@ -23,7 +23,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     container_name: tc-admin-app
     environment:
       DATABASE_URL: jdbc:postgresql://postgres:5432/tc-admin
