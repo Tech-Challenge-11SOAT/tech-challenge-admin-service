@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: aws-auth
+  name: aws-auth-admin-service
   namespace: kube-system
 data:
   mapRoles: |
