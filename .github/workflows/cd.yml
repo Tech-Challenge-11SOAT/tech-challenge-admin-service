@@ -80,7 +80,7 @@ jobs:
 
       - name: Aguardar rollout do Admin
         run: |
-          kubectl rollout status deployment/tech-challenge-admin -n techchallenge --timeout=180s
+          kubectl rollout status deployment/tech-challenge-admin-service -n techchallenge --timeout=180s
 
       - name: Healthcheck interno (Admin)
         run: |
