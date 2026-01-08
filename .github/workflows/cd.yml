@@ -65,8 +65,8 @@ jobs:
             --from-literal=DB_HOST=$RDS_ENDPOINT \
             --from-literal=DB_PORT=5432 \
             --from-literal=DB_NAME=${{ secrets.TF_VAR_DB_NAME }} \
-            --from-literal=DB_USER=${{ secrets.TF_VAR_DB_USERNAME }} \
-            --from-literal=DB_PASSWORD=${{ secrets.TF_VAR_DB_PASSWORD }} \
+            --from-literal=DATABASE_USER=${{ secrets.TF_VAR_DB_USERNAME }} \
+            --from-literal=DATABASE_PASSWORD=${{ secrets.TF_VAR_DB_PASSWORD }} \
             --from-literal=JWT_SECRET=${{ secrets.JWT_SECRET }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
