@@ -5,7 +5,6 @@ metadata:
   namespace: techchallenge
 data:
   SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
-  SPRING_DATASOURCE_USERNAME: admin
   SPRING_JPA_HIBERNATE_DDL_AUTO: validate
   SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
 
