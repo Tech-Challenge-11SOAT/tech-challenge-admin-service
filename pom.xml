@@ -232,10 +232,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
 				</execution>
 				<execution>
 					<id>report</id>
-					<phase>test</phase>
+					<phase>verify</phase>
 					<goals>
 						<goal>report</goal>
 					</goals>
+					<configuration>
+						<formats>
+							<format>XML</format>
+							<format>HTML</format>
+						</formats>
+					</configuration>
 				</execution>
 				<execution>
 					<id>check</id>
