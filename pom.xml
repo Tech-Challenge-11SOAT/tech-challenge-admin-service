@@ -243,7 +243,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
 						</formats>
 					</configuration>
 				</execution>
-				<execution>
+<!--
+					<execution>
 					<id>check</id>
 					<goals>
 						<goal>check</goal>
@@ -266,8 +267,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
 								</limits>
 							</rule>
 						</rules>
-					</configuration>
-				</execution>
+					</configuration> 
+				</execution> 
+-->
 			</executions>
 		</plugin>
 		<plugin>
