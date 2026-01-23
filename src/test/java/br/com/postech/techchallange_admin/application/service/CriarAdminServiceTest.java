@@ -51,29 +51,40 @@ class CriarAdminServiceTest {
 
     @Test
     void deveCriarAdminComSucesso() {
+        // Garantir que o admin não tem ID (null) para testar a geração de UUID
+        admin.setId(null);
+        
         Admin adminSalvo = new Admin();
-        adminSalvo.setId("123");
-        adminSalvo.setNome(admin.getNome());
-        adminSalvo.setEmail(admin.getEmail());
-        adminSalvo.setSenhaHash("senhaCriptografada");
-        adminSalvo.setRoles(admin.getRoles());
+        String senhaCriptografada = "senhaCriptografada";
 
         when(adminRepositoryPort.existsByEmail(admin.getEmail())).thenReturn(false);
-        when(passwordEncoderPort.encode(admin.getSenhaHash())).thenReturn("senhaCriptografada");
-        when(adminRepositoryPort.save(any(Admin.class))).thenReturn(adminSalvo);
+        when(passwordEncoderPort.encode(admin.getSenhaHash())).thenReturn(senhaCriptografada);
+        when(adminRepositoryPort.save(any(Admin.class))).thenAnswer(invocation -> {
+            Admin adminToSave = invocation.getArgument(0);
+            // Verificar que um UUID foi gerado
+            assertThat(adminToSave.getId()).isNotNull();
+            assertThat(adminToSave.getId()).isNotEmpty();
+            adminSalvo.setId(adminToSave.getId());
+            adminSalvo.setNome(adminToSave.getNome());
+            adminSalvo.setEmail(adminToSave.getEmail());
+            adminSalvo.setSenhaHash(senhaCriptografada);
+            adminSalvo.setRoles(adminToSave.getRoles());
+            return adminSalvo;
+        });
 
         Admin result = criarAdminService.criar(admin);
 
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo("123");
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getId()).isNotEmpty();
         verify(adminRepositoryPort, times(1)).existsByEmail(admin.getEmail());
         verify(passwordEncoderPort, times(1)).encode("senha123");
         verify(adminRepositoryPort, times(1)).save(any(Admin.class));
         verify(logAdminActionUseCase, times(1)).registrar(
-                eq("123"),
+                eq(result.getId()),
                 eq("CADASTRO"),
                 eq("ADMIN_USER"),
-                eq("123")
+                eq(result.getId())
         );
     }
 
@@ -133,5 +144,86 @@ class CriarAdminServiceTest {
         criarAdminService.criar(admin);
 
         verify(passwordEncoderPort, times(1)).encode("senha123");
+    }
+
+    @Test
+    void deveGerarUUIDQuandoIdENull() {
+        admin.setId(null);
+        Admin adminSalvo = new Admin();
+        String senhaCriptografada = "senhaCriptografada";
+
+        when(adminRepositoryPort.existsByEmail(admin.getEmail())).thenReturn(false);
+        when(passwordEncoderPort.encode(admin.getSenhaHash())).thenReturn(senhaCriptografada);
+        when(adminRepositoryPort.save(any(Admin.class))).thenAnswer(invocation -> {
+            Admin adminToSave = invocation.getArgument(0);
+            assertThat(adminToSave.getId()).isNotNull();
+            assertThat(adminToSave.getId()).isNotEmpty();
+            adminSalvo.setId(adminToSave.getId());
+            adminSalvo.setNome(adminToSave.getNome());
+            adminSalvo.setEmail(adminToSave.getEmail());
+            adminSalvo.setSenhaHash(senhaCriptografada);
+            adminSalvo.setRoles(adminToSave.getRoles());
+            return adminSalvo;
+        });
+
+        Admin result = criarAdminService.criar(admin);
+
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getId()).isNotEmpty();
+        verify(adminRepositoryPort, times(1)).save(any(Admin.class));
+    }
+
+    @Test
+    void deveGerarUUIDQuandoIdEstaVazio() {
+        admin.setId("");
+        Admin adminSalvo = new Admin();
+        String senhaCriptografada = "senhaCriptografada";
+
+        when(adminRepositoryPort.existsByEmail(admin.getEmail())).thenReturn(false);
+        when(passwordEncoderPort.encode(admin.getSenhaHash())).thenReturn(senhaCriptografada);
+        when(adminRepositoryPort.save(any(Admin.class))).thenAnswer(invocation -> {
+            Admin adminToSave = invocation.getArgument(0);
+            assertThat(adminToSave.getId()).isNotNull();
+            assertThat(adminToSave.getId()).isNotEmpty();
+            adminSalvo.setId(adminToSave.getId());
+            adminSalvo.setNome(adminToSave.getNome());
+            adminSalvo.setEmail(adminToSave.getEmail());
+            adminSalvo.setSenhaHash(senhaCriptografada);
+            adminSalvo.setRoles(adminToSave.getRoles());
+            return adminSalvo;
+        });
+
+        Admin result = criarAdminService.criar(admin);
+
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getId()).isNotEmpty();
+        verify(adminRepositoryPort, times(1)).save(any(Admin.class));
+    }
+
+    @Test
+    void naoDeveGerarUUIDQuandoIdJaExiste() {
+        String idExistente = "id-existente-123";
+        admin.setId(idExistente);
+        Admin adminSalvo = new Admin();
+        adminSalvo.setId(idExistente);
+        String senhaCriptografada = "senhaCriptografada";
+
+        when(adminRepositoryPort.existsByEmail(admin.getEmail())).thenReturn(false);
+        when(passwordEncoderPort.encode(admin.getSenhaHash())).thenReturn(senhaCriptografada);
+        when(adminRepositoryPort.save(any(Admin.class))).thenAnswer(invocation -> {
+            Admin adminToSave = invocation.getArgument(0);
+            assertThat(adminToSave.getId()).isEqualTo(idExistente);
+            adminSalvo.setId(adminToSave.getId());
+            adminSalvo.setNome(adminToSave.getNome());
+            adminSalvo.setEmail(adminToSave.getEmail());
+            adminSalvo.setSenhaHash(senhaCriptografada);
+            adminSalvo.setRoles(adminToSave.getRoles());
+            return adminSalvo;
+        });
+
+        Admin result = criarAdminService.criar(admin);
+
+        assertThat(result.getId()).isEqualTo(idExistente);
+        verify(adminRepositoryPort, times(1)).save(any(Admin.class));
     }
 }
