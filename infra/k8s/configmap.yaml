@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin-service-config # ALTERAR
+  namespace: techchallenge
+data:
+  # Database
+  SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true 
+  SPRING_DATASOURCE_USERNAME: admin
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  # JWT Expiration
+  JWT_ACCESS_TOKEN_EXPIRATION: "900000"
+  JWT_REFRESH_TOKEN_EXPIRATION: "604800000"
