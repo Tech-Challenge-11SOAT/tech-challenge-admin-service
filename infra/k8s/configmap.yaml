@@ -6,7 +6,7 @@ metadata:
 data:
   # Database
   SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
-  SPRING_DATASOURCE_USERNAME: admin
+  SPRING_DATASOURCE_USERNAME: postgres
   SPRING_JPA_HIBERNATE_DDL_AUTO: validate
 
   # JWT Expiration
