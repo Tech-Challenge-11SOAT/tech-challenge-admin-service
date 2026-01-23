@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: techchallange-admin
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tc-admin}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+logging:
+  level:
+    root: INFO
+    '[br.com.postech.techchallange_admin]': DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+jwt:
+  secret: palmeirasNaoTemMundialVitorNhoqueEMuitoBagreVaiCorinthians2012
+  access-token-expiration: 900000       # 15 minutos
+  refresh-token-expiration: 604800000  # 7 dias
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

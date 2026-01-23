@@ -3,7 +3,7 @@ name: Deploy Back to EKS
 on:
   workflow_dispatch:
   push:
-    branches: ["develop"]
+    branches: ["main"]
 
 permissions:
   id-token: write
@@ -63,10 +63,10 @@ jobs:
           kubectl create secret generic admin-service-secret \
             --namespace techchallenge \
             --from-literal=DB_HOST=$RDS_ENDPOINT \
-            --from-literal=DB_PORT=3306 \
+            --from-literal=DB_PORT=5432 \
             --from-literal=DB_NAME=${{ secrets.TF_VAR_DB_NAME }} \
-            --from-literal=DB_USER=${{ secrets.TF_VAR_DB_USERNAME }} \
-            --from-literal=DB_PASSWORD=${{ secrets.TF_VAR_DB_PASSWORD }} \
+            --from-literal=DATABASE_USER=${{ secrets.TF_VAR_DB_USERNAME }} \
+            --from-literal=DATABASE_PASSWORD=${{ secrets.TF_VAR_DB_PASSWORD }} \
             --from-literal=JWT_SECRET=${{ secrets.JWT_SECRET }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
@@ -78,18 +78,14 @@ jobs:
       - name: Deploy to Kubernetes
         run: kubectl apply -f infra/k8s/
 
-      - name: Esperar LoadBalancer
+      - name: Aguardar rollout do Admin
         run: |
-          echo "Aguardando o LoadBalancer estar pronto..."
-          for i in {1..30}; do
-            LB_HOST=$(kubectl get svc tech-challenge-admin-service -n techchallenge -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-            if [ -n "$LB_HOST" ]; then
-              echo "LOAD_BALANCER=$LB_HOST" >> $GITHUB_ENV
-              break
-            fi
-            sleep 10
-          done
+          kubectl rollout status deployment/tech-challenge-admin-service -n techchallenge --timeout=180s
 
-      - name: Mostrar URL do serviço
+      - name: Healthcheck interno (Admin)
         run: |
-          echo "A aplicação está disponível em: http://$LOAD_BALANCER"
+          kubectl run curl-test-admin --rm -i \
+            --image=curlimages/curl \
+            --restart=Never \
+            -n techchallenge \
+            -- curl -fsS http://tech-challenge-admin-service:8080/actuator/health

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin-service-config
+  namespace: techchallenge
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
+  SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+  SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+
+  SPRING_FLYWAY_ENABLED: "true"
+  SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+
+  JWT_ACCESS_TOKEN_EXPIRATION: "900000"
+  JWT_REFRESH_TOKEN_EXPIRATION: "604800000"
